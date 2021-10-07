@@ -4,16 +4,19 @@ from django.contrib.auth.decorators import login_required
 from .models import Project
 from .forms import ProjectForm
 
+
 def projects(request):
     page = 'projects'
     projects = Project.objects.all()
     context = {"projects": projects}
     return render(request, 'projects/projects.html', context=context)
 
+
 def project(request, pk):
     project = Project.objects.get(id=pk)
     context = {"project": project}
     return render(request, 'projects/single-project.html', context)
+
 
 @login_required(login_url="login")
 def createProject(request):
@@ -27,6 +30,7 @@ def createProject(request):
 
     context = {'form': form}
     return render(request, "projects/project-form.html", context=context)
+
 
 @login_required(login_url="login")
 def updateProject(request, pk):
@@ -42,12 +46,13 @@ def updateProject(request, pk):
     context = {'form': form}
     return render(request, "projects/project-form.html", context=context)
 
+
 @login_required(login_url="login")
 def deleteProject(request, pk):
     project = Project.objects.get(id=pk)
     if request.method == 'POST':
         project.delete()
         return redirect('projects')
-        
+
     context = {'object': project}
     return render(request, 'projects/delete-template.html', context=context)
