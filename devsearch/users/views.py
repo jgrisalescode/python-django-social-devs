@@ -5,11 +5,13 @@ from django.contrib import messages
 from .models import Profile
 from .forms import CustomUserCreationForm
 
+
 # Create your views here.
 def profiles(request):
     profiles = Profile.objects.all()
     context = {'profiles': profiles}
     return render(request, 'users/profiles.html', context=context)
+
 
 def profile(request, pk):
     profile = Profile.objects.get(id=pk)
@@ -17,6 +19,7 @@ def profile(request, pk):
     otherSkills = profile.skill_set.filter(description="")
     context = {'profile': profile, 'topSkills': topSkills, 'otherSkills': otherSkills}
     return render(request, 'users/profile.html', context=context)
+
 
 def loginUser(request):
     page = 'login'
@@ -43,10 +46,12 @@ def loginUser(request):
 
     return render(request, 'users/login_register.html')
 
+
 def logoutUser(request):
     logout(request)
-    messages.error(request, 'User was logged out!')
+    messages.info(request, 'User was logged out!')
     return redirect('login')
+
 
 def registerUser(request):
     page = 'register'
@@ -58,15 +63,13 @@ def registerUser(request):
             user = form.save(commit=False)  # Presave not in DB yet.
             user.username = user.username.lower()
             user.save()  # Saved in DB
-            
+
             messages.success(request, 'User account was created')
 
             login(request, user)
             return redirect('profiles')
         else:
             messages.success(request, 'An error has occurred during registration')
-
-
 
     context = {'page': page, 'form': form}
     return render(request, 'users/login_register.html', context=context)
